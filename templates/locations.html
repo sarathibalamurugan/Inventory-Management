@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Locations</title>
+</head>
+<body>
+    <h1>Locations</h1>
+    <a href="/add_location">Add Location</a>
+    <table border="1">
+        <tr>
+            <th>ID</th><th>Name</th>
+        </tr>
+        {% for l in locations %}
+        <tr>
+            <td>{{ l.location_id }}</td>
+            <td>{{ l.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Product</title>
+</head>
+<body>
+    <h1>Update Product</h1>
+    <form method="POST">
+        <label>Product ID: </label>
+        <input type="text" name="product_id" value="{{ product.product_id }}" readonly><br><br>
+
+        <label>Name: </label>
+        <input type="text" name="name" value="{{ product.name }}" required><br><br>
+
+        <label>Quantity: </label>
+        <input type="number" name="quantity" value="{{ product.quantity }}" min="0" required><br><br>
+
+        <input type="submit" value="Update Product">
+    </form>
+    <br>
+    <a href="/products">Back to Products</a>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Report</title>
+</head>
+<body>
+    <h1>Current Inventory Report</h1>
+    <table border="1">
+        <tr>
+            <th>Location</th>
+            <th>Product</th>
+            <th>Quantity</th>
+        </tr>
+        {% for row in movements %}
+        <tr>
+            <td>{{ row.location_name }}</td>
+            <td>{{ row.product_name }}</td>
+            <td>{{ row.qty }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>
