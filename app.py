@@ -80,6 +80,22 @@ def add_location():
         return redirect('/locations')
     return render_template('add_location.html')
 
+@app.route('/edit_location/<location_id>', methods=['GET', 'POST'])
+def edit_location(location_id):
+    cur = mysql.connection.cursor()
+    
+    if request.method == 'POST':
+        name = request.form['name']
+        cur.execute("UPDATE Location SET name = %s WHERE location_id = %s", (name, location_id))
+        mysql.connection.commit()
+        flash('Location updated successfully.')
+        return redirect('/locations')
+    
+    cur.execute("SELECT * FROM Location WHERE location_id = %s", (location_id,))
+    location = cur.fetchone()
+    return render_template('edit_location.html', location=location)
+
+
 @app.route('/movements', methods=['GET', 'POST'])
 def movements():
     cur = mysql.connection.cursor()  
@@ -153,20 +169,61 @@ def movements():
 def report():
     cur = mysql.connection.cursor()
     cur.execute("""
-            SELECT 
-                l.name AS location_name,
-                p.name AS product_name,
-                SUM(CASE WHEN m.to_location = l.location_id THEN m.qty ELSE 0 END) -
-                SUM(CASE WHEN m.from_location = l.location_id THEN m.qty ELSE 0 END) AS qty
-            FROM Location l
-            JOIN ProductMovement m ON l.location_id IN (m.to_location, m.from_location)
-            JOIN Product p ON p.product_id = m.product_id
-            GROUP BY l.location_id, p.product_id
-            HAVING qty > 0
-            ORDER BY l.name, p.name
-        """)
+        SELECT 
+            l.name AS location_name,
+            p.name AS product_name,
+            lp.qty
+        FROM LocationProduct lp
+        JOIN Location l ON lp.location_id = l.location_id
+        JOIN Product p ON lp.product_id = p.product_id
+        WHERE lp.qty > 0
+        ORDER BY l.name, p.name
+    """)
     movements = cur.fetchall()
     return render_template('report.html', movements=movements)
+
+
+@app.route('/sell', methods=['GET', 'POST'])
+def sell_product():
+    cur = mysql.connection.cursor()
+
+    # Get products and locations for the dropdown
+    cur.execute("SELECT product_id, name FROM Product")
+    products = cur.fetchall()
+    cur.execute("SELECT location_id, name FROM Location")
+    locations = cur.fetchall()
+
+    if request.method == 'POST':
+        product_id = request.form['product_id']
+        location_id = request.form['location_id']
+        qty = int(request.form['quantity'])
+
+        # Check available quantity at the location
+        cur.execute("""
+            SELECT qty FROM LocationProduct 
+            WHERE product_id = %s AND location_id = %s
+        """, (product_id, location_id))
+        row = cur.fetchone()
+        available_qty = row['qty'] if row else 0
+
+        if qty > available_qty:
+            flash(f'Not enough stock. Only {available_qty} units available at {location_id}.')
+            return redirect('/sell')
+
+        # Deduct from location
+        cur.execute("""
+            UPDATE LocationProduct 
+            SET qty = qty - %s 
+            WHERE product_id = %s AND location_id = %s
+        """, (qty, product_id, location_id))
+
+        # Optional: Record sale in a Sale table (not implemented here)
+        mysql.connection.commit()
+        flash(f'Successfully sold {qty} units of {product_id} from {location_id}.')
+        return redirect('/sell')
+
+    return render_template('sell_product.html', products=products, locations=locations)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

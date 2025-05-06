@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Location</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <h1>Edit Location</h1>
+    <form method="post">
+        <label for="name">Location Name:</label>
+        <input type="text" name="name" value="{{ location.name }}" required><br><br>
+        <input type="submit" value="Update">
+    </form>
+    <br>
+    <a href="/locations"><button>Back to Locations</button></a>
+</body>
+</html>

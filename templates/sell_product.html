@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sell Product</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <h1>Sell Product from Location</h1>
+    <form method="POST">
+        <label>Product:</label>
+        <select name="product_id" required>
+            {% for p in products %}
+                <option value="{{ p.product_id }}">{{ p.name }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Location:</label>
+        <select name="location_id" required>
+            {% for l in locations %}
+                <option value="{{ l.location_id }}">{{ l.name }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Quantity:</label>
+        <input type="number" name="quantity" min="1" required><br><br>
+
+        <input type="submit" value="Sell">
+    </form>
+    <br>
+    <a href="/"><button>Back to Home</button></a>
+</body>
+</html>

@@ -2,10 +2,11 @@
 <html>
 <head>
     <title>Products</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
 </head>
 <body>
     <h1>Products</h1>
-    <a href="/add_product">Add Product</a>
+    
     <table border="1">
         <tr>
             <th>ID</th><th>Name</th><th>Quantity</th>
@@ -15,11 +16,12 @@
             <td>{{ p.product_id }}</td>
             <td>{{ p.name }}</td>
             <td>{{ p.quantity }}</td>
-            <td><a href="{{ url_for('update_product', product_id=p.product_id) }}">Edit</a></td>
+            <td><a href="{{ url_for('update_product', product_id=p.product_id) }}"><button>Edit</button></a></td>
         </tr>
         {% endfor %}
     </table>
     <br>
-    <a href="/">Back to Home</a>
+    <a href="/add_product"><button>Add Product</button></a>
+    <a href="/"><button>Back to Home</button></a>
 </body>
 </html>
