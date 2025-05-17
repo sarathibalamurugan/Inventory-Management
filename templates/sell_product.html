@@ -6,6 +6,15 @@
 </head>
 <body>
     <h1>Sell Product from Location</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul style="color: red;">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <form method="POST">
         <label>Product:</label>
         <select name="product_id" required>
